@@ -52,6 +52,16 @@ app.post('/todos', (req, res) => {
     .catch(error => console.log(error))
 })
 
+//新增詳細頁面
+app.get('/todos/:id', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id) //取出 Todo model 裡的 id 資料
+    .lean() //把 Mongoose 的 Model 物件轉換成乾淨的JavaScript資料陣列
+    .then((todo) => res.render('detail', { todo })) //將資料傳給 detail 樣板
+    .catch(error => console.log(error))
+})
+
+
 // 設定 port 3000
 app.listen(3000, () => {
   console.log('App is running on http://localhost:3000')
