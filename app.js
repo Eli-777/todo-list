@@ -83,6 +83,14 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.log(error))
 })
 
+//接住修改頁面的表單，按表單回傳的資料把資料庫的同樣的資料刪除 = delete 功能
+app.post('/todos/:id/delete', (req, res) => {
+  const id = req.params.id
+  return Todo.findById(id) //取出 Todo model 裡的 id 資料
+    .then(todo => todo.remove()) //刪除此筆資料
+    .then(() => res.redirect('/')) //重新呼叫首頁
+    .catch(error => console.log(error))
+})
 
 // 設定 port 3000
 app.listen(3000, () => {
