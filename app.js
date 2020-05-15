@@ -3,6 +3,7 @@ const express = require('express')
 const mongoose = require('mongoose')
 const exphbs = require('express-handlebars')
 const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
 const Todo = require('./models/todo')
 
 
@@ -30,6 +31,8 @@ app.set('view engine', 'hbs')
 
 // 用 app.use 規定每一筆請求都需要透過 body-parser 進行前置處理
 app.use(bodyParser.urlencoded({ extended: true }))
+// 設定每一筆請求都會透過 methodOverride 進行前置處理
+app.use(methodOverride('_method'))
 
 // 設定首頁路由
 app.get('/', (req, res) => {
@@ -72,7 +75,7 @@ app.get('/todos/:id/edit', (req, res) => {
 })
 
 //接住修改頁面的表單，把資料庫的資料改成表單資料 = update 功能
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   const { name, isDone } = req.body //解構賦值
   return Todo.findById(id)
@@ -86,7 +89,7 @@ app.post('/todos/:id/edit', (req, res) => {
 })
 
 //接住修改頁面的表單，按表單回傳的資料把資料庫的同樣的資料刪除 = delete 功能
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   return Todo.findById(id) //取出 Todo model 裡的 id 資料
     .then(todo => todo.remove()) //刪除此筆資料
