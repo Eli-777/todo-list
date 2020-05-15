@@ -25,7 +25,7 @@ db.once('open', () => {
 })
 
 //設定樣版引擎
-app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs'}))
+app.engine('hbs', exphbs({ defaultLayout: 'main', extname: '.hbs' }))
 app.set('view engine', 'hbs')
 
 // 用 app.use 規定每一筆請求都需要透過 body-parser 進行前置處理
@@ -73,13 +73,14 @@ app.get('/todos/:id/edit', (req, res) => {
 //接住修改頁面的表單，把資料庫的資料改成表單資料 = update 功能
 app.post('/todos/:id/edit', (req, res) => {
   const id = req.params.id
-  const name = req.body.name
+  const { name, isDone } = req.body //解構賦值
   return Todo.findById(id)
     .then(todo => {
       todo.name = name  //把資料庫資料 name 改成收到的表單資料
+      todo.isDone = isDone === 'on' //checkbox有打勾為 on
       return todo.save() //儲存此筆資料
     })
-    .then(()=> res.redirect(`/todos/${id}`)) //回到詳細頁面
+    .then(() => res.redirect(`/todos/${id}`)) //回到詳細頁面
     .catch(error => console.log(error))
 })
 
